@@ -111,3 +111,5 @@ export default function Home() {
     </div>
   );
 }
+
+console.log("OpenWeatherMap API Key:", process.env.NEXT_PUBLIC_OPENWEATHERMAP_API_KEY);
