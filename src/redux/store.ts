@@ -1,10 +1,17 @@
 import { configureStore } from '@reduxjs/toolkit';
+import weatherReducer from './slices/weatherSlice';
+import cryptoReducer from './slices/cryptoSlice';
+import newsReducer from './slices/newsSlice';
+import favoritesReducer from './slices/favoritesSlice';
 
 const store = configureStore({
   reducer: {
-    // We'll add reducers later
+    weather: weatherReducer,
+    crypto: cryptoReducer,
+    news: newsReducer,
+    favorites: favoritesReducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware(), // Use default middleware, which includes thunk
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
