@@ -4,6 +4,9 @@ import { fetchWeather } from '../redux/slices/weatherSlice';
 import { fetchCrypto } from '../redux/slices/cryptoSlice';
 import { fetchNews } from '../redux/slices/newsSlice';
 import Layout from '../components/Layout/Layout';
+import WeatherCard from '../components/Weather/WeatherCard';
+import CryptoCard from '../components/Crypto/CryptoCard';
+import NewsItem from '../components/News/NewsItem';
 
 export default function Home() {
   const dispatch = useAppDispatch();
@@ -26,44 +29,44 @@ export default function Home() {
 
   return (
     <Layout>
-      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-4 bg-white shadow rounded">
-          <h2 className="text-xl font-semibold">Weather</h2>
-          {weatherLoading && <p>Loading weather...</p>}
-          {weatherError && <p>Error: {weatherError}</p>}
+      <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Weather Section */}
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold">Weather</h2>
+          {weatherLoading && <p className="text-gray-500">Loading weather...</p>}
+          {weatherError && <p className="text-red-500">Error: {weatherError}</p>}
+          {!weatherLoading && !weatherError && Object.keys(weatherData).length === 0 && (
+            <p className="text-gray-500">No weather data available.</p>
+          )}
           {Object.keys(weatherData).map((city) => (
-            <div key={city}>
-              <h3>{city}</h3>
-              <p>Temperature: {weatherData[city]?.main?.temp}°C</p>
-              <p>Humidity: {weatherData[city]?.main?.humidity}%</p>
-              <p>Conditions: {weatherData[city]?.weather[0]?.description}</p>
-            </div>
+            <WeatherCard key={city} city={city} data={weatherData[city]} />
           ))}
         </div>
-        <div className="p-4 bg-white shadow rounded">
-          <h2 className="text-xl font-semibold">Cryptocurrency</h2>
-          {cryptoLoading && <p>Loading crypto...</p>}
-          {cryptoError && <p>Error: {cryptoError}</p>}
+
+        {/* Cryptocurrency Section */}
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold">Cryptocurrency</h2>
+          {cryptoLoading && <p className="text-gray-500">Loading crypto...</p>}
+          {cryptoError && <p className="text-red-500">Error: {cryptoError}</p>}
+          {!cryptoLoading && !cryptoError && cryptoData.length === 0 && (
+            <p className="text-gray-500">No crypto data available.</p>
+          )}
           {cryptoData.map((crypto) => (
-            <div key={crypto.id}>
-              <h3>{crypto.name}</h3>
-              <p>Price: ${crypto.current_price}</p>
-              <p>24h Change: {crypto.price_change_percentage_24h.toFixed(2)}%</p>
-              <p>Market Cap: ${crypto.market_cap}</p>
-            </div>
+            <CryptoCard key={crypto.id} data={crypto} />
           ))}
         </div>
-        <div className="p-4 bg-white shadow rounded">
-          <h2 className="text-xl font-semibold">News</h2>
-          {newsLoading && <p>Loading news...</p>}
-          {newsError && <p>Error: {newsError}</p>}
+
+        {/* News Section */}
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold">News</h2>
+          {newsLoading && <p className="text-gray-500">Loading news...</p>}
+          {newsError && <p className="text-red-500">Error: {newsError}</p>}
+          {!newsLoading && !newsError && newsData.length === 0 && (
+            <p className="text-gray-500">No news available.</p>
+          )}
           {newsData.map((article, index) => (
-            <div key={index} className="mb-2">
-              <a href={article.link} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                {article.title}
-              </a>
-            </div>
+            <NewsItem key={index} article={article} />
           ))}
         </div>
       </div>
