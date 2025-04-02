@@ -1,3 +1,4 @@
+// src/pages/index.tsx
 import { useEffect, useState, useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { fetchWeather } from '../redux/slices/weatherSlice';
@@ -10,7 +11,7 @@ import WeatherCard from '../components/Weather/WeatherCard';
 import CryptoCard from '../components/Crypto/CryptoCard';
 import NewsItem from '../components/News/NewsItem';
 import { useWebSocket } from '../hooks/useWebSocket';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
 export default function Home() {
   const dispatch = useAppDispatch();
@@ -76,7 +77,7 @@ export default function Home() {
 
       const priceChange = ((newerPrice.price - olderPrice.price) / olderPrice.price) * 100;
       if (Math.abs(priceChange) > 5) {
-        const message = `${coin.charAt(0).toUpperCase() + coin.slice(1)} price changed by ${priceChange.toFixed(2)}% in the last ${timeDiff.toFixed(1)} minutes!`;
+        const message = `Alert: ${coin.charAt(0).toUpperCase() + coin.slice(1)} price changed by ${priceChange.toFixed(2)}% in the last ${timeDiff.toFixed(1)} minutes.`;
         dispatch(
           addNotification({
             id: `${coin}-${Date.now()}`,
@@ -109,7 +110,7 @@ export default function Home() {
     const interval = setInterval(() => {
       const cities = ['new york', 'london', 'tokyo'];
       const randomCity = cities[Math.floor(Math.random() * cities.length)];
-      const message = `Storm warning in ${randomCity.charAt(0).toUpperCase() + randomCity.slice(1)}!`;
+      const message = `Alert: Storm warning in ${randomCity.charAt(0).toUpperCase() + randomCity.slice(1)}!`;
       dispatch(
         addNotification({
           id: `weather-${Date.now()}`,
@@ -137,80 +138,115 @@ export default function Home() {
 
   return (
     <Layout>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <button
-          onClick={handleManualRefresh}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          Refresh Data
-        </button>
-      </div>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <ToastContainer aria-label="Notifications" />
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800">Dashboard</h1>
+          <button
+            onClick={handleManualRefresh}
+            className="btn px-3 sm:px-4 py-1 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm sm:text-base"
+             aria-label="Refresh dashboard data"
+          >
+            Refresh Data
+           </button>
+        </div>
 
-      {(favoriteCities.length > 0 || favoriteCryptos.length > 0) && (
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Favorites</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="space-y-4">
-              {favoriteCities.map((city) => (
-                weatherData[city] && <WeatherCard key={city} city={city} data={weatherData[city]} />
+        {(favoriteCities.length > 0 || favoriteCryptos.length > 0) && (
+          <section className="mb-8 sm:mb-12" aria-labelledby="favorites-heading">
+            <h2 id="favorites-heading" className="text-xl sm:text-2xl font-semibold text-gray-700 mb-4 sm:mb-6">
+              Favorites
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              <div className="space-y-4 sm:space-y-6" role="list">
+                {favoriteCities.map((city) => (
+                  weatherData[city] && (
+                    <div key={city} role="listitem">
+                      <WeatherCard city={city} data={weatherData[city]} className="card" />
+                    </div>
+                  )
+                ))}
+              </div>
+              <div className="space-y-4 sm:space-y-6" role="list">
+                {favoriteCryptos.map((cryptoId) => {
+                  const crypto = cryptoData.find((c) => c.id === cryptoId);
+                  return (
+                    crypto && (
+                      <div key={cryptoId} role="listitem">
+                        <CryptoCard data={crypto} className="card" />
+                      </div>
+                    )
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+        )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          <section aria-labelledby="weather-heading" className="space-y-4 sm:space-y-6">
+            <h2 id="weather-heading" className="text-xl sm:text-2xl font-semibold text-gray-700">
+              Weather
+            </h2>
+            {weatherLoading && <p className="text-gray-500 text-sm sm:text-base">Loading weather...</p>}
+            {weatherError && <p className="text-red-500 text-sm sm:text-base">Error: {weatherError}</p>}
+            {!weatherLoading && !weatherError && Object.keys(weatherData).length === 0 && (
+              <p className="text-gray-500 text-sm sm:text-base">No weather data available.</p>
+            )}
+            <div role="list">
+              {Object.keys(weatherData).map((city) => (
+                <div key={city} role="listitem">
+                  <WeatherCard city={city} data={weatherData[city]} className="card" />
+                </div>
               ))}
             </div>
-            <div className="space-y-4">
-              {favoriteCryptos.map((cryptoId) => {
-                const crypto = cryptoData.find((c) => c.id === cryptoId);
-                return crypto && <CryptoCard key={cryptoId} data={crypto} />;
-              })}
+          </section>
+
+          <section aria-labelledby="crypto-heading" className="space-y-4 sm:space-y-6">
+            <h2 id="crypto-heading" className="text-xl sm:text-2xl font-semibold text-gray-700">
+              Cryptocurrency
+            </h2>
+            {cryptoLoading && <p className="text-gray-500 text-sm sm:text-base">Loading crypto...</p>}
+            {cryptoError && (
+              <div>
+                <p className="text-red-500 text-sm sm:text-base">Error: {cryptoError}</p>
+                <button
+                  onClick={handleRetryCrypto}
+                  className="btn mt-2 px-3 sm:px-4 py-1 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm sm:text-base"
+                  aria-label="Retry loading cryptocurrency data"
+                >
+                  Retry
+                </button>
+              </div>
+            )}
+            {!cryptoLoading && !cryptoError && cryptoData.length === 0 && (
+              <p className="text-gray-500 text-sm sm:text-base">No crypto data available.</p>
+            )}
+            <div role="list">
+              {cryptoData.map((crypto) => (
+                <div key={crypto.id} role="listitem">
+                  <CryptoCard data={crypto} className="card" />
+                </div>
+              ))}
             </div>
-          </div>
-        </div>
-      )}
+          </section>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="space-y-4">
-          <h2 className="text-2xl font-semibold">Weather</h2>
-          {weatherLoading && <p className="text-gray-500">Loading weather...</p>}
-          {weatherError && <p className="text-red-500">Error: {weatherError}</p>}
-          {!weatherLoading && !weatherError && Object.keys(weatherData).length === 0 && (
-            <p className="text-gray-500">No weather data available.</p>
-          )}
-          {Object.keys(weatherData).map((city) => (
-            <WeatherCard key={city} city={city} data={weatherData[city]} />
-          ))}
-        </div>
-
-        <div className="space-y-4">
-          <h2 className="text-2xl font-semibold">Cryptocurrency</h2>
-          {cryptoLoading && <p className="text-gray-500">Loading crypto...</p>}
-          {cryptoError && (
-            <div>
-              <p className="text-red-500">Error: {cryptoError}</p>
-              <button
-                onClick={handleRetryCrypto}
-                className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                Retry
-              </button>
+          <section aria-labelledby="news-heading" className="space-y-4 sm:space-y-6">
+            <h2 id="news-heading" className="text-xl sm:text-2xl font-semibold text-gray-700">
+              News
+            </h2>
+            {newsLoading && <p className="text-gray-500 text-sm sm:text-base">Loading news...</p>}
+            {newsError && <p className="text-red-500 text-sm sm:text-base">Error: {newsError}</p>}
+            {!newsLoading && !newsError && newsData.length === 0 && (
+              <p className="text-gray-500 text-sm sm:text-base">No news available.</p>
+            )}
+            <div role="list">
+              {newsData.map((article, index) => (
+                <div key={index} role="listitem">
+                  <NewsItem article={article} className="card" />
+                </div>
+              ))}
             </div>
-          )}
-          {!cryptoLoading && !cryptoError && cryptoData.length === 0 && (
-            <p className="text-gray-500">No crypto data available.</p>
-          )}
-          {cryptoData.map((crypto) => (
-            <CryptoCard key={crypto.id} data={crypto} />
-          ))}
-        </div>
-
-        <div className="space-y-4">
-          <h2 className="text-2xl font-semibold">News</h2>
-          {newsLoading && <p className="text-gray-500">Loading news...</p>}
-          {newsError && <p className="text-red-500">Error: {newsError}</p>}
-          {!newsLoading && !newsError && newsData.length === 0 && (
-            <p className="text-gray-500">No news available.</p>
-          )}
-          {newsData.map((article, index) => (
-            <NewsItem key={index} article={article} />
-          ))}
+          </section>
         </div>
       </div>
     </Layout>
