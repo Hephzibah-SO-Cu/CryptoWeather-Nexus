@@ -1,38 +1,39 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
 
-// Simple in-memory cache (for development)
-let cachedNews: any = null;
-let lastFetchTime: number = 0;
-const CACHE_DURATION = 60 * 1000; // Cache for 60 seconds
+let cache: { data: any; timestamp: number } | null = null;
+const CACHE_DURATION = 5* 60 * 1000; // Cache for 5 minutes
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const now = Date.now();
-
-  // Return cached data if it's still valid
-  if (cachedNews && now - lastFetchTime < CACHE_DURATION) {
-    return res.status(200).json(cachedNews);
+  if (cache && now - cache.timestamp < CACHE_DURATION) {
+    return res.status(200).json(cache.data);
   }
 
   try {
-    const apiKey = process.env.NEXT_PUBLIC_NEWSDATA_API_KEY;
+    const apiKey = process.env.NEWSDATA_API_KEY;
+    if (!apiKey) {
+      throw new Error('NewsData.io API key is missing in environment variables');
+    }
     const url = `https://newsdata.io/api/1/news?apikey=${apiKey}&q=cryptocurrency&language=en`;
     const response = await axios.get(url);
+    const data = response.data.results || [];
+    const filteredData = data.slice(0, 5).map((article: any) => ({
+      title: article.title,
+      description: article.description || 'No description available.',
+      url: article.link,
+      source: article.source_id,
+      pubDate: article.pubDate,
+    }));
 
-    // Cache the response
-    cachedNews = response.data.results.slice(0, 5);
-    lastFetchTime = now;
+    cache = {
+      data: filteredData,
+      timestamp: now,
+    };
 
-    res.status(200).json(cachedNews);
+    res.status(200).json(filteredData);
   } catch (error: any) {
-    if (error.response?.status === 429) {
-      // If rate limit is hit, return cached data if available
-      if (cachedNews) {
-        return res.status(200).json(cachedNews);
-      }
-      res.status(429).json({ error: 'Rate limit exceeded for news data. Please try again later.' });
-    } else {
-      res.status(500).json({ error: 'Failed to fetch news data' });
-    }
+    console.error('Error fetching news from NewsData.io:', error.message, error.response?.status, error.response?.data);
+    res.status(500).json({ error: `Failed to fetch news: ${error.message}` });
   }
 }

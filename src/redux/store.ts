@@ -11,7 +11,6 @@ const store = configureStore({
     news: newsReducer,
     favorites: favoritesReducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

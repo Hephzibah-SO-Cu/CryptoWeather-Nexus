@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const url = `https://api.coingecko.com/api/v3/${pathString}${queryString}`;
   const cacheKey = `${pathString}${queryString}`;
 
-  console.log(`Fetching from CoinGecko: ${url}`); // Log the URL being requested
+  console.log(`Fetching from CoinGecko: ${url}`);
 
   const cachedResponse = cache[cacheKey];
   const now = Date.now();

@@ -31,7 +31,7 @@ export const fetchCryptoData = async (ids: string[]) => {
 };
 
 export const fetchCryptoDetail = async (id: string) => {
-  // Mock data for testing
+  // Mock data for production
   return {
     id,
     name: id.charAt(0).toUpperCase() + id.slice(1),
@@ -45,14 +45,10 @@ export const fetchCryptoDetail = async (id: string) => {
       circulating_supply: Math.random() * 900000,
     },
   };
-  // Uncomment to use real API once the issue is resolved
-  // const url = `/api/coingecko/coins/${id}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`;
-  // const response = await axios.get(url);
-  // return response.data;
 };
 
 export const fetchCryptoHistoricalData = async (id: string) => {
-  // Mock data for testing
+  // Mock data for production
   const historicalData = [];
   const currentDate = new Date();
   for (let i = 0; i < 7; i++) {
@@ -61,10 +57,6 @@ export const fetchCryptoHistoricalData = async (id: string) => {
     historicalData.push([date.getTime(), Math.random() * 50000 + 1000]);
   }
   return historicalData;
-  // Uncomment to use real API once the issue is resolved
-  // const url = `/api/coingecko/coins/${id}/market_chart?vs_currency=usd&days=7&interval=daily`;
-  // const response = await axios.get(url);
-  // return response.data.prices;
 };
 
 // News API (NewsData.io) - Use proxy

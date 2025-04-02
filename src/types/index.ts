@@ -49,7 +49,8 @@ export type HistoricalPriceData = Array<[number, number]>; // [timestamp, price]
 // News Data (NewsData.io)
 export interface NewsArticle {
   title: string;
-  link: string;
+  url: string;
   description: string;
+  source: string;
   pubDate: string;
 }
