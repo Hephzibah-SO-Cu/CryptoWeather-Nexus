@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { fetchWeather } from '../redux/slices/weatherSlice';
 import { fetchCrypto } from '../redux/slices/cryptoSlice';
@@ -13,19 +13,24 @@ export default function Home() {
   const { data: weatherData, loading: weatherLoading, error: weatherError } = useAppSelector((state) => state.weather);
   const { data: cryptoData, loading: cryptoLoading, error: cryptoError } = useAppSelector((state) => state.crypto);
   const { data: newsData, loading: newsLoading, error: newsError } = useAppSelector((state) => state.news);
+  const [retryCrypto, setRetryCrypto] = useState(false);
 
-  useEffect(() => {
-    // Fetch weather data for New York, London, Tokyo
+  const fetchData = () => {
     ['new york', 'london', 'tokyo'].forEach((city) => {
       dispatch(fetchWeather(city));
     });
-
-    // Fetch crypto data for Bitcoin, Ethereum, BNB
     dispatch(fetchCrypto(['bitcoin', 'ethereum', 'binancecoin']));
-
-    // Fetch crypto news
     dispatch(fetchNews());
+  };
+
+  useEffect(() => {
+    fetchData();
   }, [dispatch]);
+
+  const handleRetryCrypto = () => {
+    setRetryCrypto(true);
+    dispatch(fetchCrypto(['bitcoin', 'ethereum', 'binancecoin']));
+  };
 
   return (
     <Layout>
@@ -48,7 +53,17 @@ export default function Home() {
         <div className="space-y-4">
           <h2 className="text-2xl font-semibold">Cryptocurrency</h2>
           {cryptoLoading && <p className="text-gray-500">Loading crypto...</p>}
-          {cryptoError && <p className="text-red-500">Error: {cryptoError}</p>}
+          {cryptoError && (
+            <div>
+              <p className="text-red-500">Error: {cryptoError}</p>
+              <button
+                onClick={handleRetryCrypto}
+                className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                Retry
+              </button>
+            </div>
+          )}
           {!cryptoLoading && !cryptoError && cryptoData.length === 0 && (
             <p className="text-gray-500">No crypto data available.</p>
           )}

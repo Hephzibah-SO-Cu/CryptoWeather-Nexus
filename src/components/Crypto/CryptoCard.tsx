@@ -1,4 +1,5 @@
 import { CryptoData } from '../../types';
+import Link from 'next/link';
 
 interface CryptoCardProps {
   data: CryptoData;
@@ -10,7 +11,9 @@ const CryptoCard: React.FC<CryptoCardProps> = ({ data }) => {
     <div className="p-4 bg-white shadow rounded-lg flex items-center space-x-4 transition-transform transform hover:scale-105 hover:shadow-lg">
       <img src={data.image} alt={data.name} className="w-8 h-8" />
       <div>
-        <h3 className="text-lg font-semibold">{data.name}</h3>
+        <Link href={`/crypto/${data.id}`}>
+          <h3 className="text-lg font-semibold text-blue-600 hover:underline">{data.name}</h3>
+        </Link>
         <p className="text-gray-600">Price: ${data.current_price.toLocaleString()}</p>
         <p className={`text-gray-600 ${changeColor}`}>
           24h Change: {data.price_change_percentage_24h.toFixed(2)}%

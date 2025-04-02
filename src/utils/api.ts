@@ -8,17 +8,68 @@ export const fetchWeatherData = async (city: string) => {
   return response.data;
 };
 
-// Crypto API (CoinGecko)
+export const fetchHistoricalWeatherData = async (city: string) => {
+  const historicalData = [];
+  const currentDate = new Date();
+  for (let i = 0; i < 5; i++) {
+    const date = new Date(currentDate);
+    date.setDate(currentDate.getDate() - i);
+    historicalData.push({
+      date: date.toISOString().split('T')[0],
+      temp: Math.random() * (25 - 15) + 15,
+      description: ['clear sky', 'few clouds', 'rain', 'thunderstorm'][Math.floor(Math.random() * 4)],
+    });
+  }
+  return historicalData;
+};
+
+// Crypto API (CoinGecko) - Use proxy
 export const fetchCryptoData = async (ids: string[]) => {
-  const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids.join(',')}&order=market_cap_desc&per_page=3&page=1&sparkline=false`;
+  const url = `/api/coingecko/coins/markets?vs_currency=usd&ids=${ids.join(',')}&order=market_cap_desc&per_page=3&page=1&sparkline=false`;
   const response = await axios.get(url);
   return response.data;
 };
 
-// News API (NewsData.io)
+export const fetchCryptoDetail = async (id: string) => {
+  // Mock data for testing
+  return {
+    id,
+    name: id.charAt(0).toUpperCase() + id.slice(1),
+    image: { large: `https://example.com/${id}.png` },
+    market_data: {
+      current_price: { usd: Math.random() * 50000 + 1000 },
+      price_change_percentage_24h: Math.random() * 10 - 5,
+      market_cap: { usd: Math.random() * 1000000000000 },
+      total_volume: { usd: Math.random() * 1000000000 },
+      total_supply: Math.random() * 1000000,
+      circulating_supply: Math.random() * 900000,
+    },
+  };
+  // Uncomment to use real API once the issue is resolved
+  // const url = `/api/coingecko/coins/${id}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`;
+  // const response = await axios.get(url);
+  // return response.data;
+};
+
+export const fetchCryptoHistoricalData = async (id: string) => {
+  // Mock data for testing
+  const historicalData = [];
+  const currentDate = new Date();
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(currentDate);
+    date.setDate(currentDate.getDate() - i);
+    historicalData.push([date.getTime(), Math.random() * 50000 + 1000]);
+  }
+  return historicalData;
+  // Uncomment to use real API once the issue is resolved
+  // const url = `/api/coingecko/coins/${id}/market_chart?vs_currency=usd&days=7&interval=daily`;
+  // const response = await axios.get(url);
+  // return response.data.prices;
+};
+
+// News API (NewsData.io) - Use proxy
 export const fetchCryptoNews = async () => {
-  const apiKey = process.env.NEXT_PUBLIC_NEWSDATA_API_KEY;
-  const url = `https://newsdata.io/api/1/news?apikey=${apiKey}&q=cryptocurrency&language=en`;
+  const url = `/api/newsdata`;
   const response = await axios.get(url);
-  return response.data.results.slice(0, 5); // Get top 5 headlines
+  return response.data;
 };
