@@ -54,3 +54,17 @@ export interface NewsArticle {
   source: string;
   pubDate: string;
 }
+
+// WebSocket Price Data (CoinCap)
+export interface PriceData {
+  coin: string;
+  price: number;
+  timestamp: number;
+}
+
+// Notification
+export interface Notification {
+  id: string;
+  type: 'price_alert' | 'weather_alert';
+  message: string;
+}

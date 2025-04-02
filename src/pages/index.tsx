@@ -4,10 +4,13 @@ import { fetchWeather } from '../redux/slices/weatherSlice';
 import { fetchCrypto } from '../redux/slices/cryptoSlice';
 import { fetchNews } from '../redux/slices/newsSlice';
 import { setFavorites } from '../redux/slices/favoritesSlice';
+import { addNotification, removeNotification } from '../redux/slices/notificationSlice';
 import Layout from '../components/Layout/Layout';
 import WeatherCard from '../components/Weather/WeatherCard';
 import CryptoCard from '../components/Crypto/CryptoCard';
 import NewsItem from '../components/News/NewsItem';
+import { useWebSocket } from '../hooks/useWebSocket';
+import { toast } from 'react-toastify';
 
 export default function Home() {
   const dispatch = useAppDispatch();
@@ -15,8 +18,10 @@ export default function Home() {
   const { data: cryptoData, loading: cryptoLoading, error: cryptoError } = useAppSelector((state) => state.crypto);
   const { data: newsData, loading: newsLoading, error: newsError } = useAppSelector((state) => state.news);
   const { cities: favoriteCities, cryptos: favoriteCryptos } = useAppSelector((state) => state.favorites);
+  const { notifications } = useAppSelector((state) => state.notifications);
   const [retryCrypto, setRetryCrypto] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const { prices, connect, disconnect } = useWebSocket();
 
   const fetchData = useCallback(() => {
     ['new york', 'london', 'tokyo'].forEach((city) => {
@@ -39,6 +44,82 @@ export default function Home() {
       const parsed = JSON.parse(savedFavorites);
       dispatch(setFavorites({ cities: parsed.cities || [], cryptos: parsed.cryptos || [] }));
     }
+  }, [dispatch]);
+
+  // WebSocket connection
+  useEffect(() => {
+    connect();
+    return () => disconnect();
+  }, [connect, disconnect]);
+
+  // Calculate price changes and dispatch notifications
+  useEffect(() => {
+    const priceMap: { [key: string]: { price: number; timestamp: number }[] } = {
+      bitcoin: [],
+      ethereum: [],
+    };
+
+    prices.forEach((priceData) => {
+      priceMap[priceData.coin].push({
+        price: priceData.price,
+        timestamp: priceData.timestamp,
+      });
+    });
+
+    const checkPriceChange = (coin: string) => {
+      const coinPrices = priceMap[coin].slice(-2); // Last two prices
+      if (coinPrices.length < 2) return;
+
+      const [olderPrice, newerPrice] = coinPrices;
+      const timeDiff = (newerPrice.timestamp - olderPrice.timestamp) / (1000 * 60); // Minutes
+      if (timeDiff > 5) return; // Only check within 5 minutes
+
+      const priceChange = ((newerPrice.price - olderPrice.price) / olderPrice.price) * 100;
+      if (Math.abs(priceChange) > 5) {
+        const message = `${coin.charAt(0).toUpperCase() + coin.slice(1)} price changed by ${priceChange.toFixed(2)}% in the last ${timeDiff.toFixed(1)} minutes!`;
+        dispatch(
+          addNotification({
+            id: `${coin}-${Date.now()}`,
+            type: 'price_alert',
+            message,
+          })
+        );
+      }
+    };
+
+    checkPriceChange('bitcoin');
+    checkPriceChange('ethereum');
+  }, [prices, dispatch]);
+
+  // Display notifications as toasts
+  useEffect(() => {
+    notifications.forEach((notification: any) => {
+      toast[notification.type === 'price_alert' ? 'info' : 'warning'](
+        notification.message,
+        {
+          toastId: notification.id,
+          onClose: () => dispatch(removeNotification(notification.id)),
+        }
+      );
+    });
+  }, [notifications, dispatch]);
+
+  // Simulate weather alerts
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const cities = ['new york', 'london', 'tokyo'];
+      const randomCity = cities[Math.floor(Math.random() * cities.length)];
+      const message = `Storm warning in ${randomCity.charAt(0).toUpperCase() + randomCity.slice(1)}!`;
+      dispatch(
+        addNotification({
+          id: `weather-${Date.now()}`,
+          type: 'weather_alert',
+          message,
+        })
+      );
+    }, 2 * 60 * 1000); // Every 2 minutes for testing
+
+    return () => clearInterval(interval);
   }, [dispatch]);
 
   const handleRetryCrypto = () => {

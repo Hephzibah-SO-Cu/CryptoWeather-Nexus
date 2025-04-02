@@ -1,14 +1,26 @@
 import type { AppProps } from 'next/app';
 import { Provider } from 'react-redux';
-import store from '../redux/store'; // Change to default import
+import { store } from '../redux/store';
 import '../styles/globals.css';
-import { Toaster } from 'react-hot-toast';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Provider store={store}>
       <Component {...pageProps} />
-      <Toaster position="top-right" />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        className="toast-container"
+      />
     </Provider>
   );
 }
