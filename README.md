@@ -34,31 +34,31 @@ The app is deployed on Vercel: [https://cryptoweather-nexus-busayo.vercel.app/](
    git clone https://github.com/<Hephzibah-SO-Cu>/cryptoweather-nexus.git
    cd cryptoweather-nexus
 
-2. **Install Dependencies**
-  ```bash
-  npm install
+2. **Install Dependencies**:
+    ```bash
+    npm install
 
-3. **Set Up Environment Variables:**
-  Create a .env.local file in the root directory.
-  Add the following API keys (replace with you own):
-    - NEXT_PUBLIC_OPENWEATHERMAP_API_KEY=your_openweathermap_api_key
-    - NEWSDATA_API_KEY=your_newsdata_api_key
-    - NEXT_PUBLIC_COINGECKO_API_URL=https://api.coingecko.com/api/v3
-    - NEXT_PUBLIC_WEBSOCKET_URL=wss://ws.coincap.io/prices?assets=bitcoin,ethereum,binance-coin
+3. **Set Up Environment Variables**:
+Create a .env.local file in the root directory.
+Add the following API keys (replace with you own):
+  - NEXT_PUBLIC_OPENWEATHERMAP_API_KEY=your_openweathermap_api_key
+  - NEWSDATA_API_KEY=your_newsdata_api_key
+  - NEXT_PUBLIC_COINGECKO_API_URL=https://api.coingecko.com/api/v3
+  - NEXT_PUBLIC_WEBSOCKET_URL=wss://ws.coincap.io/prices?assets=bitcoin,ethereum,binance-coin
 
   Note: CoinGecko and NewsData.io APIs are accessed via proxy routes (/api/coingecko/[...path] and /api/newsdata), so their API keys are managed server-side (set in Vercel’s environment variables for production).
 
-4. **Run the Development Server:**
+4. **Run the Development Server**:
   ```bash
         npm run dev
       Open http://localhost:3000 in your browser.
 
-5. **Build and Run in Production Mode:**
+5. **Build and Run in Production Mode**:
   ```bash
       npm run build
       npm start
 
-**Usage Instructions**
+## Usage Instructions
 - **Dashboard:** View weather, crypto, and news data on the homepage.
 - **Favorites:** Click the heart icon on a city or crypto card to add/remove it from favorites. Favorited items appear in the "Favorites" section.
 - **Detail Pages:** Click on a city or crypto name to view detailed data (e.g., /city/new-york, /crypto/bitcoin).
@@ -66,7 +66,7 @@ The app is deployed on Vercel: [https://cryptoweather-nexus-busayo.vercel.app/](
 - **Refresh Data:** Click the "Refresh Data" button to manually refresh the dashboard, or wait for the automatic 60-second refresh.
 
 
-**Design Decisions**
+## Design Decisions
 - **Next.js and SSR:** Used Next.js with getServerSideProps for server-side rendering of detail pages, ensuring SEO-friendly deep links and fast initial loads.
 - **Redux for State Management:** Chose Redux to manage global state (weather, crypto, news, favorites, notifications) for consistency and scalability.
 - **Tailwind CSS:** Used for rapid styling with a utility-first approach, ensuring a responsive and consistent design system.
@@ -75,7 +75,7 @@ The app is deployed on Vercel: [https://cryptoweather-nexus-busayo.vercel.app/](
 - **WebSocket:** Used CoinCap WebSocket for real-time price updates, with simulated weather alerts for simplicity.
 
 
-**Challenges Faced and Resolutions**
+## Challenges Faced and Resolutions
 - **Image Loading Issues:** Next.js Image component required external hostnames to be configured in next.config.js. Resolved by adding images.remotePatterns for openweathermap.org, assets.coingecko.com, and coin-images.coingecko.com.
 - **Crypto Icons on Detail Pages:** Initially, all crypto detail pages showed the Bitcoin icon due to hardcoded mock data. Fixed by mapping crypto IDs to their respective icon URLs in fetchCryptoDetail.
 - **Spacing Between Cards:** Misunderstood the spacing requirement initially; fixed by moving space-y classes to the correct container in index.tsx.
@@ -83,7 +83,7 @@ The app is deployed on Vercel: [https://cryptoweather-nexus-busayo.vercel.app/](
 - **API Key Security:** Used environment variables and API proxies to securely manage API keys, avoiding exposure in the frontend.
 - **API Limitations and Mocked Data:** Faced challenges with API rate limits and lack of historical data access (e.g., OpenWeatherMap’s free tier doesn’t provide historical weather data, and CoinGecko’s free tier has rate limits). Resolved by mocking historical data (fetchCryptoDetail, fetchCryptoHistoricalData, fetchHistoricalWeatherData) to ensure functionality while staying within API constraints.
 
-**Project Structure**
+## Project Structure
 cryptoweather-nexus/
 ├── src/
 │   ├── components/
@@ -128,5 +128,5 @@ cryptoweather-nexus/
 ├── package.json
 ├── README.md
 
-**License**
+## License
 This project is licensed under the MIT License.
