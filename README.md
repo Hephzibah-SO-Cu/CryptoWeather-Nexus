@@ -85,50 +85,52 @@ Open http://localhost:3000 in your browser.
 - **API Key Security:** Used environment variables and API proxies to securely manage API keys, avoiding exposure in the frontend.
 - **API Limitations and Mocked Data:** Faced challenges with API rate limits and lack of historical data access (e.g., OpenWeatherMap’s free tier doesn’t provide historical weather data, and CoinGecko’s free tier has rate limits). Resolved by mocking historical data (fetchCryptoDetail, fetchCryptoHistoricalData, fetchHistoricalWeatherData) to ensure functionality while staying within API constraints.
 
-## Project Structure
-cryptoweather-nexus/
-├── src/
-│   ├── components/
-│   │   ├── Crypto/CryptoCard.tsx
-│   │   ├── Dashboard/
-│   │   ├── Layout/Layout.tsx
-│   │   ├── News/NewsItem.tsx
-│   │   ├── Notifications/
-│   │   ├── Weather/WeatherCard.tsx
-│   ├── hooks/
-│   │   ├── useWebSocket.ts
-│   ├── pages/
-│   │   ├── api/
-│   │   │   ├── coingecko/[...path].ts
-│   │   │   ├── hello.ts
-│   │   │   ├── newsdata.ts
-│   │   ├── city/
-│   │   │   ├── [cityName].tsx
-│   │   ├── crypto/
-│   │   │   ├── [cryptoId].tsx
-│   │   ├── index.tsx
-│   │   ├── _app.tsx
-│   │   ├── _document.tsx
-│   ├── redux/
-│   │   ├── slices/
-│   │   │   ├── cryptoSlice.ts
-│   │   │   ├── favoritesSlice.ts
-│   │   │   ├── newsSlice.ts
-│   │   │   ├── notificationSlice.ts
-│   │   │   ├── weatherSlice.ts
-│   │   ├── hooks.ts
-│   │   ├── store.ts
-│   ├── styles/
-│   │   ├── globals.css
-│   ├── types/
-│   │   ├── index.ts
-│   ├── utils/
-│   │   ├── api.ts
-├── public/
-├── .env.local
-├── next.config.js
-├── package.json
-├── README.md
-
 ## License
 This project is licensed under the MIT License.
+
+## Project Structure
+  ```bash
+  cryptoweather-nexus/
+  ├── src/
+  │   ├── components/
+  │   │   ├── Crypto/CryptoCard.tsx
+  │   │   ├── Dashboard/
+  │   │   ├── Layout/Layout.tsx
+  │   │   ├── News/NewsItem.tsx
+  │   │   ├── Notifications/
+  │   │   ├── Weather/WeatherCard.tsx
+  │   ├── hooks/
+  │   │   ├── useWebSocket.ts
+  │   ├── pages/
+  │   │   ├── api/
+  │   │   │   ├── coingecko/[...path].ts
+  │   │   │   ├── hello.ts
+  │   │   │   ├── newsdata.ts
+  │   │   ├── city/
+  │   │   │   ├── [cityName].tsx
+  │   │   ├── crypto/
+  │   │   │   ├── [cryptoId].tsx
+  │   │   ├── index.tsx
+  │   │   ├── _app.tsx
+  │   │   ├── _document.tsx
+  │   ├── redux/
+  │   │   ├── slices/
+  │   │   │   ├── cryptoSlice.ts
+  │   │   │   ├── favoritesSlice.ts
+  │   │   │   ├── newsSlice.ts
+  │   │   │   ├── notificationSlice.ts
+  │   │   │   ├── weatherSlice.ts
+  │   │   ├── hooks.ts
+  │   │   ├── store.ts
+  │   ├── styles/
+  │   │   ├── globals.css
+  │   ├── types/
+  │   │   ├── index.ts
+  │   ├── utils/
+  │   │   ├── api.ts
+  ├── public/
+  ├── .env.local
+  ├── next.config.js
+  ├── package.json
+  ├── README.md
+
