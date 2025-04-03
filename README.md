@@ -39,6 +39,7 @@ The app is deployed on Vercel: [https://cryptoweather-nexus-busayo.vercel.app/](
     npm install
 
 3. **Set Up Environment Variables**:
+
 Create a .env.local file in the root directory.
 Add the following API keys (replace with you own):
   - NEXT_PUBLIC_OPENWEATHERMAP_API_KEY=your_openweathermap_api_key
@@ -50,8 +51,9 @@ Add the following API keys (replace with you own):
 
 4. **Run the Development Server**:
   ```bash
-        npm run dev
-      Open http://localhost:3000 in your browser.
+      npm run dev
+
+Open http://localhost:3000 in your browser.
 
 5. **Build and Run in Production Mode**:
   ```bash
