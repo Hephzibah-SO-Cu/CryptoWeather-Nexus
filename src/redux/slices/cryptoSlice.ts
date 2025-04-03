@@ -14,17 +14,14 @@ const initialState: CryptoState = {
   error: null,
 };
 
-export const fetchCrypto = createAsyncThunk(
-  'crypto/fetchCrypto',
-  async (ids: string[], { rejectWithValue }) => {
-    try {
-      const data = await fetchCryptoData(ids);
-      return data;
-    } catch (error) {
-      return rejectWithValue('Failed to fetch crypto data');
-    }
+export const fetchCrypto = createAsyncThunk('crypto/fetchCrypto', async (ids: string[], { rejectWithValue }) => {
+  try {
+    const response = await fetchCryptoData(ids);
+    return response;
+  } catch {
+    return rejectWithValue('Failed to fetch crypto data');
   }
-);
+});
 
 const cryptoSlice = createSlice({
   name: 'crypto',

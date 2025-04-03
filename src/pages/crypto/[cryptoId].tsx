@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
+import Image from 'next/image'; // Already added
 import Layout from '../../components/Layout/Layout';
 import { fetchCryptoDetail, fetchCryptoHistoricalData } from '../../utils/api';
 import { CryptoDetail, HistoricalPriceData, CryptoData } from '../../types';
@@ -30,7 +31,7 @@ const CryptoDetailPage: React.FC<CryptoDetailProps> = ({ cryptoData, historicalD
           <h1 className="text-3xl font-bold mb-6 capitalize">{cryptoId} Details</h1>
           {fallbackData ? (
             <div className="mb-8 p-6 bg-white shadow rounded-lg flex items-center space-x-6">
-              <img src={fallbackData.image} alt={fallbackData.name} className="w-16 h-16" />
+              <Image src={fallbackData.image} alt={fallbackData.name} width={64} height={64} />
               <div>
                 <h2 className="text-2xl font-semibold mb-4">Current Metrics (Limited Data)</h2>
                 <p className="text-gray-600">Price: ${fallbackData.current_price.toLocaleString()}</p>
@@ -64,7 +65,7 @@ const CryptoDetailPage: React.FC<CryptoDetailProps> = ({ cryptoData, historicalD
         </button>
         <h1 className="text-3xl font-bold mb-6 capitalize">{cryptoData.name}</h1>
         <div className="mb-8 p-6 bg-white shadow rounded-lg flex items-center space-x-6">
-          <img src={cryptoData.image.large} alt={cryptoData.name} className="w-16 h-16" />
+          <Image src={cryptoData.image.large} alt={cryptoData.name} width={64} height={64} />
           <div>
             <h2 className="text-2xl font-semibold mb-4">Current Metrics</h2>
             <p className="text-gray-600">Price: ${cryptoData.market_data.current_price.usd.toLocaleString()}</p>
@@ -113,7 +114,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         historicalData,
       },
     };
-  } catch (error) {
+  } catch {
     return {
       props: {
         cryptoData: null,

@@ -62,14 +62,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   try {
     const weatherData = await fetchWeatherData(cityName);
-    const historicalData = await fetchHistoricalWeatherData(cityName);
+    const historicalData = await fetchHistoricalWeatherData();
     return {
       props: {
         weatherData,
         historicalData,
       },
     };
-  } catch (error) {
+  } catch {
     return {
       notFound: true, // Return 404 if the city is not found
     };

@@ -14,17 +14,14 @@ const initialState: NewsState = {
   error: null,
 };
 
-export const fetchNews = createAsyncThunk(
-  'news/fetchNews',
-  async (_, { rejectWithValue }) => {
-    try {
-      const data = await fetchCryptoNews();
-      return data;
-    } catch (error) {
-      return rejectWithValue('Failed to fetch news data');
-    }
+export const fetchNews = createAsyncThunk('news/fetchNews', async (_, { rejectWithValue }) => {
+  try {
+    const response = await fetchCryptoNews();
+    return response;
+  } catch {
+    return rejectWithValue('Failed to fetch news');
   }
-);
+});
 
 const newsSlice = createSlice({
   name: 'news',

@@ -8,7 +8,7 @@ export const fetchWeatherData = async (city: string) => {
   return response.data;
 };
 
-export const fetchHistoricalWeatherData = async (city: string) => {
+export const fetchHistoricalWeatherData = async () => {
   const historicalData = [];
   const currentDate = new Date();
   for (let i = 0; i < 5; i++) {
@@ -32,10 +32,14 @@ export const fetchCryptoData = async (ids: string[]) => {
 
 export const fetchCryptoDetail = async (id: string) => {
   // Mock data for production
+  const cryptoId = id;
+  const capitalizedName = cryptoId.charAt(0).toUpperCase() + cryptoId.slice(1);
+  const imageUrl = `https://example.com/${cryptoId}.png`;
+
   return {
-    id,
-    name: id.charAt(0).toUpperCase() + id.slice(1),
-    image: { large: `https://example.com/${id}.png` },
+    id: cryptoId,
+    name: capitalizedName,
+    image: { large: imageUrl },
     market_data: {
       current_price: { usd: Math.random() * 50000 + 1000 },
       price_change_percentage_24h: Math.random() * 10 - 5,

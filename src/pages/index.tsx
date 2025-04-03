@@ -6,6 +6,7 @@ import { fetchCrypto } from '../redux/slices/cryptoSlice';
 import { fetchNews } from '../redux/slices/newsSlice';
 import { setFavorites } from '../redux/slices/favoritesSlice';
 import { addNotification, removeNotification } from '../redux/slices/notificationSlice';
+import { Notification } from '../redux/slices/notificationSlice'; // Import the Notification type
 import Layout from '../components/Layout/Layout';
 import WeatherCard from '../components/Weather/WeatherCard';
 import CryptoCard from '../components/Crypto/CryptoCard';
@@ -20,7 +21,6 @@ export default function Home() {
   const { data: newsData, loading: newsLoading, error: newsError } = useAppSelector((state) => state.news);
   const { cities: favoriteCities, cryptos: favoriteCryptos } = useAppSelector((state) => state.favorites);
   const { notifications } = useAppSelector((state) => state.notifications);
-  const [retryCrypto, setRetryCrypto] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const { prices, connect, disconnect } = useWebSocket();
 
@@ -58,6 +58,7 @@ export default function Home() {
     const priceMap: { [key: string]: { price: number; timestamp: number }[] } = {
       bitcoin: [],
       ethereum: [],
+      binancecoin: [], // Match CoinGecko ID
     };
 
     prices.forEach((priceData) => {
@@ -90,11 +91,12 @@ export default function Home() {
 
     checkPriceChange('bitcoin');
     checkPriceChange('ethereum');
+    checkPriceChange('binancecoin');
   }, [prices, dispatch]);
 
   // Display notifications as toasts
   useEffect(() => {
-    notifications.forEach((notification: any) => {
+    notifications.forEach((notification: Notification) => {
       toast[notification.type === 'price_alert' ? 'info' : 'warning'](
         notification.message,
         {
@@ -124,7 +126,6 @@ export default function Home() {
   }, [dispatch]);
 
   const handleRetryCrypto = () => {
-    setRetryCrypto(true);
     dispatch(fetchCrypto(['bitcoin', 'ethereum', 'binancecoin']));
   };
 
@@ -139,16 +140,16 @@ export default function Home() {
   return (
     <Layout>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <ToastContainer aria-label="Notifications" />
+        <ToastContainer aria-label="Notifications" role="alert" />
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800">Dashboard</h1>
           <button
             onClick={handleManualRefresh}
             className="btn px-3 sm:px-4 py-1 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm sm:text-base"
-             aria-label="Refresh dashboard data"
+            aria-label="Refresh dashboard data"
           >
             Refresh Data
-           </button>
+          </button>
         </div>
 
         {(favoriteCities.length > 0 || favoriteCryptos.length > 0) && (

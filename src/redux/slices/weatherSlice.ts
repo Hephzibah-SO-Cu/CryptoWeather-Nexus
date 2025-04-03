@@ -14,17 +14,14 @@ const initialState: WeatherState = {
   error: null,
 };
 
-export const fetchWeather = createAsyncThunk(
-  'weather/fetchWeather',
-  async (city: string, { rejectWithValue }) => {
-    try {
-      const data = await fetchWeatherData(city);
-      return { city, data };
-    } catch (error) {
-      return rejectWithValue('Failed to fetch weather data');
-    }
+export const fetchWeather = createAsyncThunk('weather/fetchWeather', async (city: string, { rejectWithValue }) => {
+  try {
+    const response = await fetchWeatherData(city);
+    return { city, data: response };
+  } catch {
+    return rejectWithValue('Failed to fetch weather data');
   }
-);
+});
 
 const weatherSlice = createSlice({
   name: 'weather',
