@@ -40,25 +40,25 @@ The app is deployed on Vercel: [https://cryptoweather-nexus-busayo.vercel.app/](
 
 3. **Set Up Environment Variables**:
 
-Create a .env.local file in the root directory.
-Add the following API keys (replace with you own):
+  Create a .env.local file in the root directory.
+  Add the following API keys (replace with you own):
   - NEXT_PUBLIC_OPENWEATHERMAP_API_KEY=your_openweathermap_api_key
   - NEWSDATA_API_KEY=your_newsdata_api_key
   - NEXT_PUBLIC_COINGECKO_API_URL=https://api.coingecko.com/api/v3
   - NEXT_PUBLIC_WEBSOCKET_URL=wss://ws.coincap.io/prices?assets=bitcoin,ethereum,binance-coin
 
-  Note: CoinGecko and NewsData.io APIs are accessed via proxy routes (/api/coingecko/[...path] and /api/newsdata), so their API keys are managed server-side (set in Vercel’s environment variables for production).
+    Note: CoinGecko and NewsData.io APIs are accessed via proxy routes (/api/coingecko/[...path] and /api/newsdata), so their API keys are managed server-side (set in Vercel’s environment variables for production).
 
 4. **Run the Development Server**:
-  ```bash
-      npm run dev
+    ```bash
+    npm run dev
 
 Open http://localhost:3000 in your browser.
 
 5. **Build and Run in Production Mode**:
-  ```bash
-      npm run build
-      npm start
+    ```bash
+    npm run build
+    npm start
 
 ## Usage Instructions
 - **Dashboard:** View weather, crypto, and news data on the homepage.
