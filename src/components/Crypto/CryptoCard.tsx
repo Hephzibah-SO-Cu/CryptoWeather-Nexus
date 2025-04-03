@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link'; // Add this import
 import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { addCryptoToFavorites, removeCryptoFromFavorites } from '../../redux/slices/favoritesSlice';
@@ -36,9 +37,14 @@ const CryptoCard: React.FC<CryptoCardProps> = ({ data, className }) => {
           width={40}
           height={40}
           className="rounded-full"
+          onError={(e) => {
+            e.currentTarget.src = '/images/crypto-fallback.png'; // Fallback image (you'll need to add this)
+          }}
         />
         <div className="flex-1">
-          <h3 className="text-lg font-semibold">{data.name}</h3>
+          <Link href={`/crypto/${data.id}`}>
+            <h3 className="text-lg font-semibold hover:text-blue-600 transition-colors">{data.name}</h3>
+          </Link>
           <p className="text-gray-600">Price: ${data.current_price.toLocaleString()}</p>
           <p
             className={`text-sm ${

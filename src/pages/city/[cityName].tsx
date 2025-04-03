@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
+import Image from 'next/image'; // Add this import
 import Layout from '../../components/Layout/Layout';
 import { fetchWeatherData, fetchHistoricalWeatherData } from '../../utils/api';
 import { WeatherData, HistoricalWeatherData } from '../../types';
@@ -23,11 +24,22 @@ const CityDetail: React.FC<CityDetailProps> = ({ weatherData, historicalData }) 
           Back to Dashboard
         </button>
         <h1 className="text-3xl font-bold mb-6 capitalize">{cityName} Weather</h1>
-        <div className="mb-8 p-6 bg-white shadow rounded-lg">
-          <h2 className="text-2xl font-semibold mb-4">Current Weather</h2>
-          <p className="text-gray-600">Temperature: {weatherData.main.temp}°C</p>
-          <p className="text-gray-600">Humidity: {weatherData.main.humidity}%</p>
-          <p className="text-gray-600">Conditions: {weatherData.weather[0].description}</p>
+        <div className="mb-8 p-6 bg-white shadow rounded-lg flex items-center space-x-6">
+          <Image
+            src={`http://openweathermap.org/img/wn/${weatherData.weather[0].icon}.png`}
+            alt={weatherData.weather[0].description}
+            width={64}
+            height={64}
+            onError={(e) => {
+              e.currentTarget.src = '/images/weather-fallback.png'; // Fallback image (not added yet)
+            }}
+          />
+          <div>
+            <h2 className="text-2xl font-semibold mb-4">Current Weather</h2>
+            <p className="text-gray-600">Temperature: {weatherData.main.temp}°C</p>
+            <p className="text-gray-600">Humidity: {weatherData.main.humidity}%</p>
+            <p className="text-gray-600">Conditions: {weatherData.weather[0].description}</p>
+          </div>
         </div>
         <div className="p-6 bg-white shadow rounded-lg">
           <h2 className="text-2xl font-semibold mb-4">Historical Weather (Last 5 Days)</h2>

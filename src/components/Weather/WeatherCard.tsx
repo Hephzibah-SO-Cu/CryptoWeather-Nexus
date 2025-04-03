@@ -43,10 +43,13 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ city, data, className }) => {
           alt={data.weather[0].description}
           width={40}
           height={40}
+          onError={(e) => {
+            e.currentTarget.src = '/images/weather-fallback.png'; // Fallback image (you'll need to add this)
+          }}
         />
         <div className="flex-1">
-          <h3 className="text-lg font-semibold capitalize">{city}</h3>
-          <p className="text-gray-600">Temp: ${data.main.temp}°C</p>
+          <h3 className="text-lg font-semibold capitalize hover:text-blue-600 transition-colors">{city}</h3>
+          <p className="text-gray-600">Temp: {data.main.temp}°C</p>
           <p className="text-gray-600 capitalize">{data.weather[0].description}</p>
         </div>
         <button

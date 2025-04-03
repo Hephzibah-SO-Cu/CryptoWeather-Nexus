@@ -34,7 +34,15 @@ export const fetchCryptoDetail = async (id: string) => {
   // Mock data for production
   const cryptoId = id;
   const capitalizedName = cryptoId.charAt(0).toUpperCase() + cryptoId.slice(1);
-  const imageUrl = `https://example.com/${cryptoId}.png`;
+
+  // Map crypto IDs to their respective CoinGecko icon URLs
+  const iconMap: { [key: string]: string } = {
+    bitcoin: 'https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1547033579',
+    ethereum: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png?1595348880',
+    binancecoin: 'https://assets.coingecko.com/coins/images/825/large/binance-coin-logo.png?1547034615',
+  };
+
+  const imageUrl = iconMap[cryptoId] || 'https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1547033579'; // Fallback to Bitcoin icon if ID not found
 
   return {
     id: cryptoId,

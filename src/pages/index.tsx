@@ -153,12 +153,14 @@ export default function Home() {
         </div>
 
         {(favoriteCities.length > 0 || favoriteCryptos.length > 0) && (
-          <section className="mb-8 sm:mb-12" aria-labelledby="favorites-heading">
+          <section className="mb --
+
+8 sm:mb-12" aria-labelledby="favorites-heading">
             <h2 id="favorites-heading" className="text-xl sm:text-2xl font-semibold text-gray-700 mb-4 sm:mb-6">
               Favorites
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              <div className="space-y-4 sm:space-y-6" role="list">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+              <div role="list" className="space-y-4 sm:space-y-6">
                 {favoriteCities.map((city) => (
                   weatherData[city] && (
                     <div key={city} role="listitem">
@@ -167,7 +169,7 @@ export default function Home() {
                   )
                 ))}
               </div>
-              <div className="space-y-4 sm:space-y-6" role="list">
+              <div role="list" className="space-y-4 sm:space-y-6">
                 {favoriteCryptos.map((cryptoId) => {
                   const crypto = cryptoData.find((c) => c.id === cryptoId);
                   return (
@@ -183,8 +185,8 @@ export default function Home() {
           </section>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          <section aria-labelledby="weather-heading" className="space-y-4 sm:space-y-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          <section aria-labelledby="weather-heading" className="p-4 sm:p-6 bg-gray-50 rounded-lg">
             <h2 id="weather-heading" className="text-xl sm:text-2xl font-semibold text-gray-700">
               Weather
             </h2>
@@ -193,7 +195,7 @@ export default function Home() {
             {!weatherLoading && !weatherError && Object.keys(weatherData).length === 0 && (
               <p className="text-gray-500 text-sm sm:text-base">No weather data available.</p>
             )}
-            <div role="list">
+            <div role="list" className="space-y-4 sm:space-y-6">
               {Object.keys(weatherData).map((city) => (
                 <div key={city} role="listitem">
                   <WeatherCard city={city} data={weatherData[city]} className="card" />
@@ -202,7 +204,7 @@ export default function Home() {
             </div>
           </section>
 
-          <section aria-labelledby="crypto-heading" className="space-y-4 sm:space-y-6">
+          <section aria-labelledby="crypto-heading" className="p-4 sm:p-6 bg-gray-50 rounded-lg">
             <h2 id="crypto-heading" className="text-xl sm:text-2xl font-semibold text-gray-700">
               Cryptocurrency
             </h2>
@@ -222,7 +224,7 @@ export default function Home() {
             {!cryptoLoading && !cryptoError && cryptoData.length === 0 && (
               <p className="text-gray-500 text-sm sm:text-base">No crypto data available.</p>
             )}
-            <div role="list">
+            <div role="list" className="space-y-4 sm:space-y-6">
               {cryptoData.map((crypto) => (
                 <div key={crypto.id} role="listitem">
                   <CryptoCard data={crypto} className="card" />
@@ -231,7 +233,7 @@ export default function Home() {
             </div>
           </section>
 
-          <section aria-labelledby="news-heading" className="space-y-4 sm:space-y-6">
+          <section aria-labelledby="news-heading" className="p-4 sm:p-6 bg-gray-50 rounded-lg">
             <h2 id="news-heading" className="text-xl sm:text-2xl font-semibold text-gray-700">
               News
             </h2>
@@ -240,7 +242,7 @@ export default function Home() {
             {!newsLoading && !newsError && newsData.length === 0 && (
               <p className="text-gray-500 text-sm sm:text-base">No news available.</p>
             )}
-            <div role="list">
+            <div role="list" className="space-y-4 sm:space-y-6">
               {newsData.map((article, index) => (
                 <div key={index} role="listitem">
                   <NewsItem article={article} className="card" />
